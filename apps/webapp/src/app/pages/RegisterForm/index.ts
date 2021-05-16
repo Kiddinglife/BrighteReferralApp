@@ -1,0 +1,1 @@
+export { RegisterFormPage } from './RegisterForm';

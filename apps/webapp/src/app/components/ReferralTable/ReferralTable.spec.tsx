@@ -2,9 +2,9 @@ import { getByText, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Referral } from '../../types/referral';
 import { ReferralTable } from './ReferralTable';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('ReferralTable', () => {
-
   const testReferrals: Referral[] = [
     {
       id: 1,
@@ -23,7 +23,11 @@ describe('ReferralTable', () => {
   ];
 
   it('should render headers correctly', async () => {
-    const { baseElement } = render(<ReferralTable referrals={[]} />);
+    const { baseElement } = render(
+      <BrowserRouter>
+        <ReferralTable referrals={[]} />
+      </BrowserRouter>
+    );
     await waitFor(() => getByText(baseElement as HTMLElement, 'Given Name'));
     await waitFor(() => getByText(baseElement as HTMLElement, 'Surname'));
     await waitFor(() => getByText(baseElement as HTMLElement, 'Email'));
@@ -32,7 +36,11 @@ describe('ReferralTable', () => {
   });
 
   it('should render referral fields', async () => {
-    const { baseElement } = render(<ReferralTable referrals={testReferrals} />);
+    const { baseElement } = render(
+      <BrowserRouter>
+        <ReferralTable referrals={testReferrals} />
+      </BrowserRouter>
+    );
     await waitFor(() => getByText(baseElement as HTMLElement, 'John'));
     await waitFor(() => getByText(baseElement as HTMLElement, 'Doe'));
     await waitFor(() => getByText(baseElement as HTMLElement, '0456 123123'));

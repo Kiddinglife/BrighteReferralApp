@@ -7,6 +7,8 @@ import TableRow from '@material-ui/core/TableRow';
 import React from 'react';
 import { ReactComponent as CreateIcon } from '../../../assets/create-24px.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/delete-24px.svg';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useHistory, Link } from 'react-router-dom';
 import { Referral } from '../../types/referral';
 import { IconButton } from '../IconButton';
 import style from './ReferralTable.module.css';
@@ -24,10 +26,11 @@ interface ActionBodyCellProps {
   onDeleteClick: () => void;
 }
 
-const ActionBodyCell: React.FC<ActionBodyCellProps> = ({
-                                                         onEditClick,
-                                                         onDeleteClick,
-                                                       }) => (
+interface ActionHeadCellProps {
+  onCreateClick: () => void;
+}
+
+const ActionBodyCell: React.FC<ActionBodyCellProps> = ({ onEditClick, onDeleteClick }) => (
   <TableCell classes={{ root: style.actionBodyCell }}>
     <IconButton onClick={onEditClick}>
       <CreateIcon />
@@ -38,16 +41,29 @@ const ActionBodyCell: React.FC<ActionBodyCellProps> = ({
   </TableCell>
 );
 
+const ActionHeadCell: React.FC = (props) => (
+  <TableCell classes={{ root: style.TableHeadCell }}>
+    <Link to="/registerUser">
+      <IconButton>
+        <AddCircleOutlineIcon />
+      </IconButton>
+    </Link>
+  </TableCell>
+);
+
 interface ReferralTableProps {
   referrals: Referral[];
+  deleteReferral?: (id: number) => void;
 }
 
-
-const ReferralTable: React.FC<ReferralTableProps> = ({ referrals }) => {
+const ReferralTable: React.FC<ReferralTableProps> = ({ referrals, deleteReferral }) => {
   return (
     <TableContainer classes={{ root: style.container }}>
       <Table>
         <TableHead>
+          <TableRow>
+            <ActionHeadCell />
+          </TableRow>
           <TableRow>
             <TableHeadCell>Given Name</TableHeadCell>
             <TableHeadCell>Surname</TableHeadCell>
@@ -66,12 +82,16 @@ const ReferralTable: React.FC<ReferralTableProps> = ({ referrals }) => {
               <ActionBodyCell
                 onEditClick={() => {
                   console.log(`Edit referral ${referral.id} clicked`);
-                }
-                }
+                }}
                 onDeleteClick={() => {
-                  console.log(`Delete referral ${referral.id} clicked`);
-                }
-                }
+                  fetch(`http://localhost:3333/referrals/${referral.id}?version=1`, {
+                    method: 'DELETE',
+                  }).then((res) => {
+                    if (res.ok) {
+                      deleteReferral(referral.id);
+                    }
+                  });
+                }}
               />
             </TableRow>
           ))}
