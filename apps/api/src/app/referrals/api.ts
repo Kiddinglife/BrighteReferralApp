@@ -32,3 +32,14 @@ export const deleteReferral = async (req: Request, res: Response) => {
   });
   res.sendStatus(200);
 };
+
+export const updateReferral = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  await prisma.referral.update({
+    where: { id: Number(id) },
+    data: {
+      ...req.body,
+    },
+  });
+  res.sendStatus(200);
+};

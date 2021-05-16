@@ -4,25 +4,15 @@ import { TextField } from 'final-form-material-ui';
 import { Paper, Grid, Button, CssBaseline } from '@material-ui/core';
 import { Link, BrowserRouter } from 'react-router-dom';
 
-export default class RegisterForm extends React.Component {
+export default class ReferralUpdateForm extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = props.handleSubmit;
-    this.isUpdateForm = props.isUpdateForm;
-    this.state = {
-      givenName: '',
-      surName: '',
-      email: '',
-      phone: '',
-    };
+    this.state = props.currReferral;
+    console.log('ReferralUpdateForm this.state', this.state);
   }
 
-  handleChange = (prop) => (event) => {
-    this.setState({ [prop]: event.target.value });
-  };
-
   render() {
-    console.log('state', this.state);
     return (
       <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
         <CssBaseline />
@@ -44,7 +34,7 @@ export default class RegisterForm extends React.Component {
             if (!values.surName) {
               errors.surName = 'Required';
             } else if (values.surName.length < 2 || values.surName.length > 200) {
-              errors.surName = 'Required 2 to 200 characters ';
+              errors.surName = 'Required 2 to 200 characters';
             }
             if (!values.email) {
               errors.email = 'Required';
@@ -89,7 +79,7 @@ export default class RegisterForm extends React.Component {
                   </Grid>
                   <Grid item style={{ marginTop: 16 }}>
                     <Button variant="contained" color="primary" type="submit" variant="contained" disabled={submitting}>
-                      Create
+                      Update
                     </Button>
                   </Grid>
                 </Grid>

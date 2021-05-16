@@ -1,0 +1,1 @@
+export { ReferralUpdateFormPage } from './ReferralUpdateForm';

@@ -19,9 +19,15 @@ const ReferralList: React.FC = (props) => {
     setReferrals(newReferrals);
   }
 
+  function updateReferral(referral: Referral) {
+    const idx = referrals.findIndex((curr) => curr.id === referral.id);
+    referrals[idx] = referral;
+    setReferrals(referrals);
+  }
+
   return (
     <div className={style.frame}>
-      <ReferralTable referrals={referrals} deleteReferral={deleteReferral} />
+      <ReferralTable referrals={referrals} deleteReferral={deleteReferral} updateReferral={updateReferral} />
     </div>
   );
 };

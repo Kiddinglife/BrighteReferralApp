@@ -24,26 +24,37 @@ const TableBodyCell: React.FC = ({ children }) => (
 interface ActionBodyCellProps {
   onEditClick: () => void;
   onDeleteClick: () => void;
+  currReferral?: Referral;
 }
 
 interface ActionHeadCellProps {
   onCreateClick: () => void;
 }
 
-const ActionBodyCell: React.FC<ActionBodyCellProps> = ({ onEditClick, onDeleteClick }) => (
+const ActionBodyCell: React.FC<ActionBodyCellProps> = ({ currReferral, onEditClick, onDeleteClick }) => (
   <TableCell classes={{ root: style.actionBodyCell }}>
-    <IconButton onClick={onEditClick}>
-      <CreateIcon />
-    </IconButton>
+    <Link
+      to={{
+        pathname: '/updateReferral',
+        // query: {
+        //   currReferral: JSON.stringify(currReferral),
+        // },
+        state: { currReferral },
+      }}
+    >
+      <IconButton onClick={onEditClick}>
+        <CreateIcon />
+      </IconButton>
+    </Link>
     <IconButton onClick={onDeleteClick}>
       <DeleteIcon />
     </IconButton>
   </TableCell>
 );
-
+// updateReferral
 const ActionHeadCell: React.FC = (props) => (
   <TableCell classes={{ root: style.TableHeadCell }}>
-    <Link to="/registerUser">
+    <Link to="/registerReferral">
       <IconButton>
         <AddCircleOutlineIcon />
       </IconButton>
@@ -54,9 +65,10 @@ const ActionHeadCell: React.FC = (props) => (
 interface ReferralTableProps {
   referrals: Referral[];
   deleteReferral?: (id: number) => void;
+  updateReferral?: (referral: Referral) => void;
 }
 
-const ReferralTable: React.FC<ReferralTableProps> = ({ referrals, deleteReferral }) => {
+const ReferralTable: React.FC<ReferralTableProps> = ({ referrals, deleteReferral, updateReferral }) => {
   return (
     <TableContainer classes={{ root: style.container }}>
       <Table>
@@ -80,8 +92,10 @@ const ReferralTable: React.FC<ReferralTableProps> = ({ referrals, deleteReferral
               <TableBodyCell>{referral.email}</TableBodyCell>
               <TableBodyCell>{referral.phone}</TableBodyCell>
               <ActionBodyCell
+                currReferral={referral}
                 onEditClick={() => {
                   console.log(`Edit referral ${referral.id} clicked`);
+                  updateReferral(referral);
                 }}
                 onDeleteClick={() => {
                   fetch(`http://localhost:3333/referrals/${referral.id}?version=1`, {
