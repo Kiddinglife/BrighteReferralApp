@@ -94,7 +94,6 @@ const ReferralTable: React.FC<ReferralTableProps> = ({ referrals, deleteReferral
               <ActionBodyCell
                 currReferral={referral}
                 onEditClick={() => {
-                  console.log(`Edit referral ${referral.id} clicked`);
                   updateReferral(referral);
                 }}
                 onDeleteClick={() => {
