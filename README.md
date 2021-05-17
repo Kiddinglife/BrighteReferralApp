@@ -147,7 +147,7 @@ with identical email addresses. Let's introduce input validation on the REST API
 
 ## Implementation Notes
 
-Please add notes here. Also feel free to add any further thoughts on your implementation decisions and potential
-improvement ideas.
+Note that there are two branches main and ddd that represent two kinds of solutions – 
+main one is based on transaction script pattern (simple but working solution)  pattern while ddd one is based on onion pattern(complex but powerful).
 
 Happy Coding 🧑‍💻
