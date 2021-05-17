@@ -17,7 +17,10 @@ const ReferralUpdateFormPage: React.FC = (props) => {
           body: JSON.stringify(values),
         }).then((res) => {
           if (res.ok) {
-            console.log('handleSubmited');
+            console.log('ReferralUpdateFormPage handleSubmited ok');
+          } else 
+          {
+            console.log('ReferralUpdateFormPage handleSubmited error', res.json());
           }
         });
       }}

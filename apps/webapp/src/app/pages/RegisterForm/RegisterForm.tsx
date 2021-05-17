@@ -13,7 +13,13 @@ const RegisterFormPage: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(values),
-        }).then((data) => data.json());
+        }).then((res) => {
+          if (res.ok) {
+            console.log('RegisterFormPage handleSubmited ok');
+          } else {
+            console.log('RegisterFormPage handleSubmited error', res.json());
+          }
+        });
       }}
     />
   );

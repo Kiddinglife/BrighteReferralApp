@@ -14,8 +14,8 @@ describe('Referrals API', () => {
     const newReferral = {
       givenName: 'jake',
       surName: 'jake',
-      email: 'jake1',
-      phone: '123',
+      email: 'name0@gmail.com',
+      phone: '0456234345',
     };
     const result = await request(app).post('/referrals?version=1').send(newReferral);
     console.log('result body', result.body);
@@ -31,8 +31,8 @@ describe('Referrals API', () => {
     const newReferral = {
       givenName: 'jake',
       surName: 'jake',
-      email: 'jake2',
-      phone: '123',
+      email: 'name1@gmail.com',
+      phone: '0456234345',
     };
     let result = await request(app).post('/referrals?version=1').send(newReferral);
     expect(result.status).toEqual(200);
@@ -44,16 +44,16 @@ describe('Referrals API', () => {
     let newReferral = {
       givenName: 'jake',
       surName: 'jake',
-      email: 'jake3',
-      phone: '123',
+      email: 'name2@gmail.com',
+      phone: '0456234345',
     };
     let result = await request(app).post('/referrals?version=1').send(newReferral);
     expect(result.status).toEqual(200);
     newReferral = {
-      givenName: 'jake123',
-      surName: 'jake123',
-      email: 'jake8',
-      phone: '123',
+      givenName: 'jake',
+      surName: 'jake',
+      email: 'name3@gmail.com',
+      phone: '0456234346',
     };
     const id = result.body;
     result = await request(app).put(`/referrals/${result.body}?version=1`).send(newReferral);
@@ -64,13 +64,42 @@ describe('Referrals API', () => {
     expect(referral.email).toEqual(newReferral.email);
   });
 
+  it('should report 400 bad request for invaliad referral when creatign or updatingreferral', async () => {
+    let newReferral = {
+      givenName: 'j',
+      surName: 'jake',
+      email: 'gmail.com',
+      phone: '0456234345',
+    };
+    let result = await request(app).post('/referrals?version=1').send(newReferral);
+    expect(result.status).toEqual(400);
+
+    newReferral = {
+      givenName: 'jake',
+      surName: 'jake',
+      email: 'name4@gmail.com',
+      phone: '0456234345',
+    };
+    result = await request(app).post('/referrals?version=1').send(newReferral);
+    expect(result.status).toEqual(200);
+
+    newReferral = {
+      givenName: 'j',
+      surName: 'jake',
+      email: 'gmail.com',
+      phone: '0456234345',
+    };
+    result = await request(app).put(`/referrals/${result.body}?version=1`).send(newReferral);
+    expect(result.status).toEqual(400);
+  });
+
   it('should not create referrals with same email', async () => {
     // I used @unique on email field in schema.prisma
     // But not sure why this test pass maybe I have to recreate scheme from raw sql staements ???
     const newReferral = {
       givenName: 'jake',
       surName: 'jake',
-      email: 'jake',
+      email: 'name5@gmail.com',
       phone: '123',
     };
     const newUser1 = await prisma.referral.create({
