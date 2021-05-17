@@ -56,8 +56,11 @@ export class GivenName extends Value<GivenNameProps> {
   }
 
   public static create(props: GivenNameProps): Result<GivenName> {
-    console.debug("GivenName create", props.value );
-    if (props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH)
+    if (!props.value) {
+      return Result.fail<SurName>('Required Given Name');
+    }
+    console.debug('GivenName create', props.value);
+    if (!props.value || props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH)
       return Result.fail<GivenName>('Required 2 to 200 characters');
     else return Result.ok<GivenName>(new GivenName(props));
   }
@@ -73,8 +76,11 @@ export class Email extends Value<EmailProps> {
   }
 
   public static create(props: EmailProps): Result<Email> {
-    if (!BC_EMAIL_FORMAT.test(props.value.toLowerCase())) {
-      return Result.fail<Email>('Invalid australia phone number');
+    if (!props.value) {
+      return Result.fail<SurName>('Required email');
+    }
+    if (!props.value || !BC_EMAIL_FORMAT.test(props.value.toLowerCase())) {
+      return Result.fail<Email>('Invalid Email formate');
     }
     return Result.ok<Email>(new Email(props));
   }
@@ -90,14 +96,14 @@ export class SurName extends Value<SurNameProps> {
   }
 
   public static create(props: SurNameProps): Result<SurName> {
-    if (props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH)
-    {
-      console.debug("SurName create error", props.value );
-      return Result.fail<SurName>('Required 2 to 200 characters');
+    if (!props.value) {
+      return Result.fail<SurName>('Required Surname');
     }
-    else 
-    {
-      console.debug("SurName create ok", props.value );
+    if (props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH) {
+      console.debug('SurName create error', props.value);
+      return Result.fail<SurName>('Required 2 to 200 characters');
+    } else {
+      console.debug('SurName create ok', props.value);
       return Result.ok<SurName>(new SurName(props));
     }
   }
@@ -113,8 +119,11 @@ export class Phone extends Value<PhoneProps> {
   }
 
   public static create(props: PhoneProps): Result<Phone> {
+    if (!props.value) {
+      return Result.fail<SurName>('Required phone');
+    }
     if (!BC_AUS_PHONE_NUMBER.test(props.value)) {
-      console.error('++++++++++Invalid phone format', props.value);
+      console.error('Invalid phone format', props.value);
       return Result.fail<Phone>('Invalid phone format');
     }
     return Result.ok<Phone>(new Phone(props));
