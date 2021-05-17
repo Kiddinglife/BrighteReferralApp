@@ -39,7 +39,7 @@ export const getReferralById = async (req: Request, res: Response) => {
 };
 
 export const postReferral = async (req: Request, res: Response) => {
-  console.log('postReferral req body', req.body);
+  console.debug('postReferral req body', req.body);
   const givenName = ReferralDomain.GivenName.create({ value: req.body.givenName });
   const surName = ReferralDomain.SurName.create({ value: req.body.surName });
   const email = ReferralDomain.Email.create({ value: req.body.email });
@@ -90,7 +90,7 @@ export const deleteReferral = async (req: Request, res: Response) => {
 };
 
 export const updateReferral = async (req: Request, res: Response) => {
-  console.log('updateReferral req body', req.body);
+  console.debug('updateReferral req body', req.body);
   const givenName = ReferralDomain.GivenName.create({ value: req.body.givenName });
   const surName = ReferralDomain.SurName.create({ value: req.body.surName });
   const email = ReferralDomain.Email.create({ value: req.body.email });
@@ -132,6 +132,5 @@ export const updateReferral = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const newReferralVal = newReferral.getValue();
   await prismaSQLiteReferralRepo.save(newReferralVal, id);
-  console.log('++updateReferral', id);
   res.sendStatus(200);
 };

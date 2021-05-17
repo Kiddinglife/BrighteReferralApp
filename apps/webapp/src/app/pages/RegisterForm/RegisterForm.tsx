@@ -13,9 +13,9 @@ const RegisterFormPage: React.FC = () => {
           body: JSON.stringify(values),
         }).then((res) => {
           if (res.ok) {
-            console.log('RegisterFormPage handleSubmited ok');
+            console.debug('RegisterFormPage handleSubmited ok');
           } else {
-            console.log('RegisterFormPage handleSubmited error', res.json());
+            console.error('RegisterFormPage handleSubmited error', res.json());
           }
         });
       }}

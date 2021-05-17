@@ -73,7 +73,7 @@ export class PrismaSQLiteReferralRepo implements IReferralRepo {
   save(referral?: ReferralDomain.Referral, id?: DDDTypes.ID) {
     return new Promise<DDDTypes.ID>((resolve, reject) => {
       if (id !== undefined && referral === undefined) {
-        console.log("PrismaSQLiteReferralRepo delete");
+        console.debug('PrismaSQLiteReferralRepo delete');
         this.prisma.referral
           .delete({
             where: { id: Number(id) },
@@ -87,7 +87,7 @@ export class PrismaSQLiteReferralRepo implements IReferralRepo {
             }
           );
       } else if (id === undefined && referral !== undefined) {
-        console.log("PrismaSQLiteReferralRepo create");
+        console.debug('PrismaSQLiteReferralRepo create');
         this.prisma.referral
           .create({
             data: {
@@ -107,7 +107,7 @@ export class PrismaSQLiteReferralRepo implements IReferralRepo {
             }
           );
       } else if (id !== undefined && referral !== undefined) {
-        console.log("PrismaSQLiteReferralRepo update", id);
+        console.debug('PrismaSQLiteReferralRepo update', id);
         this.prisma.referral
           .update({
             where: { id: Number(id) },

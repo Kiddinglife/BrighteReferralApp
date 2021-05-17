@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import app from '../';
-import prisma from '../prisma';
+import prisma from '../../../prisma/prisma';
 
 describe('Referrals API', () => {
   it('should return all referrals as array', async () => {

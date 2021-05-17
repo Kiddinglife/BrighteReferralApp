@@ -56,7 +56,7 @@ export class GivenName extends Value<GivenNameProps> {
   }
 
   public static create(props: GivenNameProps): Result<GivenName> {
-    console.log("GivenName create", props.value );
+    console.debug("GivenName create", props.value );
     if (props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH)
       return Result.fail<GivenName>('Required 2 to 200 characters');
     else return Result.ok<GivenName>(new GivenName(props));
@@ -92,12 +92,12 @@ export class SurName extends Value<SurNameProps> {
   public static create(props: SurNameProps): Result<SurName> {
     if (props.value.length < BC_MINI_FIELD_LENGTH || props.value.length > BC_MAX_FIELD_LENGTH)
     {
-      console.log("SurName create error", props.value );
+      console.debug("SurName create error", props.value );
       return Result.fail<SurName>('Required 2 to 200 characters');
     }
     else 
     {
-      console.log("SurName create ok", props.value );
+      console.debug("SurName create ok", props.value );
       return Result.ok<SurName>(new SurName(props));
     }
   }
@@ -123,7 +123,7 @@ export class Phone extends Value<PhoneProps> {
 
 export class Referral extends Entity<ReferralProps> {
   private constructor(props: ReferralProps, id?: ID) {
-    console.log(
+    console.debug(
       'Referral constructor',
       props.givenName.value,
       props.surName.value,
