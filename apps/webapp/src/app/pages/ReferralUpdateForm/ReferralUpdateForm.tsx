@@ -14,7 +14,7 @@ const ReferralUpdateFormPage: React.FC = (props) => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(diffs),
+            body: JSON.stringify(values),
           }).then((res) => {
             if (res.ok) {
               console.log('ReferralUpdateFormPage handleSubmited ok');

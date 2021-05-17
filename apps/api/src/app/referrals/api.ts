@@ -1,115 +1,137 @@
 import { Request, Response } from 'express';
-import prisma from '../prisma';
+import { PrismaSQLiteReferralRepo } from '../../../prisma/ReferralRepositoryImpl';
+import * as ReferralDomain from './domain/Referral';
+import * as DDDTypes from './domain/DDDTypes';
+import { IReferralRepo, ReferralModel } from './domain/ReferralRepository';
+
+// use injest framework to automatically inject PrismaSQLiteReferralRepo instance
+const prismaSQLiteReferralRepo: IReferralRepo = new PrismaSQLiteReferralRepo();
 
 export const getAllReferrals = async (req: Request, res: Response) => {
-  const referrals = await prisma.referral.findMany();
-
-  res.json(referrals);
+  let referralModels: ReferralModel[] = [];
+  const referrals = <ReferralDomain.Referral[]>await prismaSQLiteReferralRepo.findById();
+  for (let referral of referrals) {
+    const referralModel: ReferralModel = {
+      ...referral,
+      id: referral._id,
+      givenName: referral.value.givenName.value,
+      surName: referral.value.surName.value,
+      email: referral.value.email.value,
+      phone: referral.value.phone.value,
+    };
+    referralModels.push(referralModel);
+  }
+  res.json(referralModels);
 };
 
 export const getReferralById = async (req: Request, res: Response) => {
-  const { id }: { id?: number } = req.params;
-  const referral = await prisma.referral.findUnique({
-    where: { id: Number(id) },
-  });
-
-  res.json(referral);
+  const { id }: { id?: DDDTypes.ID } = req.params;
+  const referral = <ReferralDomain.Referral>await prismaSQLiteReferralRepo.findById(id);
+  const referralModel: ReferralModel = {
+    ...referral,
+    id: referral._id,
+    givenName: referral.value.givenName.value,
+    surName: referral.value.surName.value,
+    email: referral.value.email.value,
+    phone: referral.value.phone.value,
+  };
+  res.json(referralModel);
 };
 
 export const postReferral = async (req: Request, res: Response) => {
-  const errors = validateNewReferral(req.body);
+  console.log('postReferral req body', req.body);
+  const givenName = ReferralDomain.GivenName.create({ value: req.body.givenName });
+  const surName = ReferralDomain.SurName.create({ value: req.body.surName });
+  const email = ReferralDomain.Email.create({ value: req.body.email });
+  const phone = ReferralDomain.Phone.create({ value: req.body.phone });
+
+  let errors: any = {};
+  if (givenName.isFailure) {
+    errors.givenName = givenName.error;
+  }
+  if (surName.isFailure) {
+    errors.surName = surName.error;
+  }
+  if (email.isFailure) {
+    errors.email = email.error;
+  }
+  if (phone.isFailure) {
+    errors.phone = phone.error;
+  }
   if (Object.keys(errors).length > 0) {
+    console.error('postReferral', errors);
     res.status(400).json(errors);
     return;
   }
-  const newUser = await prisma.referral.create({
-    data: {
-      ...req.body,
-    },
+
+  const newReferral = ReferralDomain.Referral.create({
+    givenName: givenName.getValue(),
+    surName: surName.getValue(),
+    email: email.getValue(),
+    phone: phone.getValue(),
   });
-  res.status(200).json(newUser.id);
+  if (newReferral.isFailure) {
+    errors.referral = newReferral.error;
+  }
+  if (Object.keys(errors).length > 0) {
+    console.error('postReferral', errors);
+    res.status(400).json(errors);
+    return;
+  }
+  const newReferralVal = newReferral.getValue();
+  const newReferralId = await prismaSQLiteReferralRepo.save(newReferralVal);
+  res.status(200).json(newReferralId);
 };
 
 export const deleteReferral = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
-  await prisma.referral.delete({
-    where: { id: Number(id) },
-  });
+  await prismaSQLiteReferralRepo.save(undefined, id);
   res.sendStatus(200);
 };
 
 export const updateReferral = async (req: Request, res: Response) => {
-  let errors = validateUpdatingReferral(req.body);
+  console.log('updateReferral req body', req.body);
+  const givenName = ReferralDomain.GivenName.create({ value: req.body.givenName });
+  const surName = ReferralDomain.SurName.create({ value: req.body.surName });
+  const email = ReferralDomain.Email.create({ value: req.body.email });
+  const phone = ReferralDomain.Phone.create({ value: req.body.phone });
+
+  let errors: any = {};
+  if (givenName.isFailure) {
+    errors.givenName = givenName.error;
+  }
+  if (surName.isFailure) {
+    errors.surName = surName.error;
+  }
+  if (email.isFailure) {
+    errors.email = email.error;
+  }
+  if (phone.isFailure) {
+    errors.phone = phone.error;
+  }
   if (Object.keys(errors).length > 0) {
+    console.error('updateReferral', errors);
+    res.status(400).json(errors);
+    return;
+  }
+
+  const newReferral = ReferralDomain.Referral.create({
+    givenName: givenName.getValue(),
+    surName: surName.getValue(),
+    email: email.getValue(),
+    phone: phone.getValue(),
+  });
+  if (newReferral.isFailure) {
+    errors.referral = newReferral.error;
+  }
+  if (Object.keys(errors).length > 0) {
+    console.error('postupdateReferralReferral', errors);
     res.status(400).json(errors);
     return;
   }
   const { id }: { id?: number } = req.params;
-  await prisma.referral.update({
-    where: { id: Number(id) },
-    data: {
-      ...req.body,
-    },
-  });
+  const newReferralVal = newReferral.getValue();
+  await prismaSQLiteReferralRepo.save(newReferralVal, id);
+  console.log('++updateReferral', id);
   res.sendStatus(200);
-};
-
-const validateUpdatingReferral = (values: any) => {
-  let errors: any = {};
-
-  if (values.givenName) {
-    if (values.givenName.length < 2 || values.givenName.length > 200) {
-      errors.givenName = 'Required 2 to 200 characters';
-    }
-  }
-  if (values.surName) {
-    if (values.surName.length < 2 || values.surName.length > 200) {
-      errors.surName = 'Required 2 to 200 characters';
-    }
-  }
-  if (values.email) {
-    const patt = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!patt.test(values.email.toLowerCase())) {
-      errors.email = 'Invalid email format';
-    }
-  }
-  if (values.phone) {
-    const patt = /04[\d]{8}/g;
-    if (!patt.test(values.phone)) {
-      errors.phone = 'Invalid phone number';
-    }
-  }
-  return errors;
-};
-
-const validateNewReferral = (values: any) => {
-  let errors: any = {};
-
-  if (!values.givenName) {
-    errors.givenName = 'givenName Required';
-  } else if (values.givenName.length < 2 || values.givenName.length > 200) {
-    errors.givenName = 'Required 2 to 200 characters';
-  }
-  if (!values.surName) {
-    errors.surName = 'Required';
-  } else if (values.surName.length < 2 || values.surName.length > 200) {
-    errors.surName = 'Required 2 to 200 characters';
-  }
-  if (!values.email) {
-    errors.email = 'Required';
-  } else {
-    const patt = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!patt.test(values.email.toLowerCase())) {
-      errors.email = 'Invalid email format';
-    }
-  }
-  if (!values.phone) {
-    errors.phone = 'Required';
-  } else {
-    const patt = /04[\d]{8}/g;
-    if (!patt.test(values.phone)) {
-      errors.phone = 'Invalid phone number';
-    }
-  }
-  return errors;
 };
