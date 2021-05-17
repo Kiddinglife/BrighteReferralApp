@@ -2,13 +2,12 @@ import React from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
 import { Paper, Grid, Button, CssBaseline } from '@material-ui/core';
-import { Link, BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default class RegisterForm extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = props.handleSubmit;
-    this.isUpdateForm = props.isUpdateForm;
     this.state = {
       givenName: '',
       surName: '',
@@ -17,12 +16,7 @@ export default class RegisterForm extends React.Component {
     };
   }
 
-  handleChange = (prop) => (event) => {
-    this.setState({ [prop]: event.target.value });
-  };
-
   render() {
-    console.log('state', this.state);
     return (
       <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}>
         <CssBaseline />

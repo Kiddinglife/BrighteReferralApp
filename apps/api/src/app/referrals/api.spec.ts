@@ -18,11 +18,9 @@ describe('Referrals API', () => {
       phone: '0456234345',
     };
     const result = await request(app).post('/referrals?version=1').send(newReferral);
-    console.log('result body', result.body);
     const referral = await prisma.referral.findUnique({
       where: { id: Number(result.body) },
     });
-    console.log('referral', referral);
     expect(result.status).toEqual(200);
     expect(referral.email).toEqual(newReferral.email);
   });

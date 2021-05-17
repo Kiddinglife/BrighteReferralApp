@@ -2,14 +2,13 @@ import React from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
 import { Paper, Grid, Button, CssBaseline } from '@material-ui/core';
-import { Link, BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default class ReferralUpdateForm extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = props.handleSubmit;
     this.state = props.currReferral;
-    console.log('ReferralUpdateForm this.state', this.state);
   }
 
   render() {
